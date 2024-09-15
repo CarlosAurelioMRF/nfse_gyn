@@ -16,9 +16,7 @@ module NfseGyn
       Gyoku.xml(
         'Rps' => {
           'InfDeclaracaoPrestacaoServico' => {
-            '@xmlns' => 'http://nfse.goiania.go.gov.br/xsd/nfse_gyn_v02.xsd',
             'Rps' => {
-              '@Id' => raise_if_missing(@invoice[:identification_number], :identification_number),
               'IdentificacaoRps' => {
                 'Numero' => @invoice[:identification_number],
                 'Serie' => raise_if_missing(NfseGyn.configuration.rps_serie, :rps_serie),
@@ -65,7 +63,7 @@ module NfseGyn
       signer.cert = OpenSSL::X509::Certificate.new(certificate)
       signer.private_key = OpenSSL::PKey::RSA.new(private_key, NfseGyn.configuration.cert_key_password)
       signer.security_node = signer.document.root
-      node = signer.document.dup.at_xpath("//*[@Id=#{@invoice[:identification_number]}]")
+      node = signer.document.dup.at_xpath("")
       signer.digest!(node, enveloped: true)
       signer.sign!(issuer_serial: true)
       signer.document.to_xml(save_with: Nokogiri::XML::Node::SaveOptions::AS_XML | Nokogiri::XML::Node::SaveOptions::NO_DECLARATION).strip
